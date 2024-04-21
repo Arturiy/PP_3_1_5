@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Column(name = "year_of_birth")
     private int yearOfBirth;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @Size.List(@Size(min = 1, message = "У пользователя должна быть хотя бы одна роль"))
     private Set<Role> roles;
