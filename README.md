@@ -1,4 +1,4 @@
-# Приложение работвет по URL
+# Приложение работает по URL
 
 #### GET http://localhost:8080/admin
 
@@ -7,7 +7,7 @@
 
 ## Первый запуск
 
-При первом запуске необходимо выполнить скрипт `src/main/resources/`**init.SQL** для инициализации схемы базы данных и создания дефолного пользователя для начала работы:
+При первом запуске, необходимо выполнить скрипт  `src/main/resources/`**init.SQL** для инициализации схемы базы данных и создания дефолтного пользователя для начала работы:
 
 login: **root**
 
@@ -25,9 +25,3 @@ spring.datasource.username=**root**
 spring.datasource.password=**root**
 
 spring.jpa.properties.hibernate.dialect=**org.hibernate.dialect.MySQL8Dialect**
-
-
-
-
-
-
