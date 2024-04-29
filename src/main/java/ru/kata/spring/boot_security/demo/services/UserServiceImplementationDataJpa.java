@@ -14,11 +14,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Service
 @Transactional(readOnly = true)
 public class UserServiceImplementationDataJpa implements UserService {
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -28,20 +26,13 @@ public class UserServiceImplementationDataJpa implements UserService {
         this.passwordEncoder = new BCryptPasswordEncoder();
     }
 
-    @Override
-    public User findByUserName(String username) {
-        return userRepository.findByUserName(username);
-    }
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
-
     String encodePassword(String password) {
         return passwordEncoder.encode(password);
     }
-
 
     public User findById(int id) {
         Optional<User> foundUser = userRepository.findById(id);
