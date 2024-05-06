@@ -1,7 +1,8 @@
-# Приложение работает по URL
+# Приложение запускается по URL
 
 #### GET http://localhost:8080
 
+который обрабатывает специальный StartController, возвращающий стартовую страницу. Дальнейшая работа происходит в формате запросов к REST контроллерам и обработки результатов на клиенте. Валидация данных выполняется на сервере.
 
 ***
 
@@ -27,3 +28,4 @@ spring.datasource.username=**root**
 spring.datasource.password=**root**
 
 spring.jpa.properties.hibernate.dialect=**org.hibernate.dialect.MySQL8Dialect**
+
