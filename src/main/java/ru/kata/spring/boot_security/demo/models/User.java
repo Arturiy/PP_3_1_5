@@ -15,21 +15,27 @@ public class User implements UserDetails {
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     @Column(name = "user_name")
     @NotEmpty(message = "Имя пользователя не может быть пустым")
     @Size(min = 2, max = 100, message = "Имя пользователя должено быть от 2 до 100 символов длиной")
     private String userName;
+
     @Column(name = "email")
     @Email(message = "Некорректный адрес электронной почты")
+    @NotEmpty(message = "Поле электронной почты не может быть пустым")
     private String email;
+
     @Column(name = "password")
     @NotEmpty(message = "Пароль не может быть пустым")
     @Size(min = 2, max = 100, message = "Пароль должен быть от 5 до 100 символов длиной")
     private String password;
+
     @Min(value = 1900, message = "Год рождения должен быть больше, чем 1900")
     @Digits(integer = 4, fraction = 0, message = "Некорректный год рождения")
     @Column(name = "year_of_birth")
     private int yearOfBirth;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     @Size.List(@Size(min = 1, message = "У пользователя должна быть хотя бы одна роль"))

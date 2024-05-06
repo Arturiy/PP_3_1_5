@@ -47,7 +47,6 @@ public class UserServiceImplementationDataJpa implements UserService {
 
     @Transactional
     public void update(int id, User updatedPerson) {
-        updatedPerson.setId(id);
         if (!Objects.equals(updatedPerson.getPassword(), findById(id).getPassword())) {
             updatedPerson.setPassword(encodePassword(updatedPerson.getPassword()));
         }
@@ -57,6 +56,11 @@ public class UserServiceImplementationDataJpa implements UserService {
     @Transactional
     public void delete(int id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User findByUserName(String username) {
+        return userRepository.findByUserName(username);
     }
 
     @Transactional

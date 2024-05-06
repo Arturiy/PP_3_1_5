@@ -1,53 +1,81 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
+import ru.kata.spring.boot_security.demo.utils.UserValidator;
 
 import javax.validation.Valid;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api")
 public class AdminController {
     private final UserService userServiceImplementation;
     private final RoleService roleService;
+    private final UserValidator userValidator;
 
     @Autowired
-    public AdminController(UserService userServiceImplementation, RoleService roleService) {
+    public AdminController(UserService userServiceImplementation, RoleService roleService, UserValidator userValidator) {
         this.userServiceImplementation = userServiceImplementation;
         this.roleService = roleService;
+        this.userValidator = userValidator;
     }
 
     @GetMapping("/admin")
-    public String showAll(@ModelAttribute("user") User user, @AuthenticationPrincipal User authenticatedUser, Model model) {
-        model.addAttribute("authenticatedUser", authenticatedUser);
-        model.addAttribute("users", userServiceImplementation.findAll());
-        model.addAttribute("allRoles", roleService.findAll());
-        return "adminPage";
+    public ResponseEntity<List<User>> showAll(@ModelAttribute("user") User user, @AuthenticationPrincipal User authenticatedUser) {
+        List<User> users = userServiceImplementation.findAll();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+
     }
 
     @PostMapping("/admin")
-    public String create(@ModelAttribute("emptyUser") @Valid User user) {
+    public ResponseEntity<List<String>> create(@Valid @RequestBody User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            List<String> errorsList = bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
+            return new ResponseEntity<>(errorsList, HttpStatus.BAD_REQUEST);
+        }
         userServiceImplementation.save(user);
-        return "redirect:/admin";
+        return ResponseEntity.ok(List.of("User " + user.getUsername() + " was created"));
     }
 
-    @PostMapping("admin/{id}")
-    public String update(@ModelAttribute("user") User user) {
-        userServiceImplementation.update(user.getId(), user);
-        return "redirect:/admin";
+    @GetMapping("/admin/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable("id") int id) {
+        User user = userServiceImplementation.findById(id);
+        return ResponseEntity.ok(user);
     }
 
-    @PostMapping("admin/{id}/delete")
-    public String delete(@PathVariable("id") int id) {
+    @GetMapping("/admin/roles")
+    public ResponseEntity<List<Role>> getAllRoles() {
+        List<Role> roles = roleService.findAll();
+        return ResponseEntity.ok(roles);
+    }
+
+
+    @PutMapping("admin/{id}")
+    public ResponseEntity<List<String>> update(@PathVariable("id") int id, @Valid @RequestBody User user, BindingResult bindingResult) {
+        user.setId(id);
+        userValidator.validateToUpdate(user, bindingResult);
+        if (bindingResult.hasErrors()) {
+            List<String> errorsList = bindingResult.getAllErrors().stream().map(ObjectError::getDefaultMessage).toList();
+            return new ResponseEntity<>(errorsList, HttpStatus.BAD_REQUEST);
+        }
+        userServiceImplementation.update(id, user);
+        return ResponseEntity.ok(List.of("User " + user.getUsername() + " was updated"));
+    }
+
+    @DeleteMapping("admin/{id}")
+    public ResponseEntity delete(@PathVariable("id") int id) {
         userServiceImplementation.delete(id);
-        return "redirect:/admin";
+        return ResponseEntity.ok("User " + id + " was deleted");
     }
 }

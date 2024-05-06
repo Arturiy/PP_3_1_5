@@ -1,25 +1,19 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.kata.spring.boot_security.demo.models.User;
 
-@Controller
-@RequestMapping()
+@RestController
+@RequestMapping("/api")
 public class UserController {
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
 
 
     @GetMapping("/user")
-    public String getUserPage(@AuthenticationPrincipal User user, Model model) {
-        model.addAttribute("user", user);
-        return "/userPage";
+    public ResponseEntity<User> getUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok(user);
     }
 }
