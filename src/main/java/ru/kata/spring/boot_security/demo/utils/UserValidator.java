@@ -25,13 +25,6 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object o, Errors errors) {
         User user = (User) o;
-        if (userServiceImplementation.findByUserName(user.getUsername()) != null) {
-            errors.rejectValue("userName", "", "Пользователь с таким именем уже существует");
-        }
-    }
-
-    public void validateToUpdate(Object o, Errors errors) {
-        User user = (User) o;
         User foundUsers = userServiceImplementation.findByUserName(user.getUsername()); // foundUsers =
         if (foundUsers != null && foundUsers.getId() != (user.getId())) {
             errors.rejectValue("userName", "", "Пользователь с таким именем уже существует!");

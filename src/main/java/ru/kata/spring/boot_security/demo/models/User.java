@@ -8,15 +8,21 @@ import javax.validation.constraints.*;
 import java.util.Collection;
 import java.util.Set;
 
+/*
+Тип ID изменил на long.
+Добавил для UserName (unique = true), сообщение для пользователья при попытке
+зарегистрироваться с не уникальным именем создается с помощью валидации в UserValidator
+*/
+
 @Entity
 @Table(name = "Users")
 public class User implements UserDetails {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
 
-    @Column(name = "user_name")
+    @Column(name = "user_name", unique = true)
     @NotEmpty(message = "Имя пользователя не может быть пустым")
     @Size(min = 2, max = 100, message = "Имя пользователя должено быть от 2 до 100 символов длиной")
     private String userName;
@@ -75,11 +81,11 @@ public class User implements UserDetails {
         this.roles = roles;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
