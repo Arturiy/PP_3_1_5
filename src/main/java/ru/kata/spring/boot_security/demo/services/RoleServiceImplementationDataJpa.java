@@ -34,11 +34,13 @@ public class RoleServiceImplementationDataJpa implements RoleService {
         roleRepository.save(role);
     }
 
+    @Transactional
     @Override
     public void delete(Long id) {
         roleRepository.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void update(Long id, Role updatedRole) {
         roleRepository.save(updatedRole);
